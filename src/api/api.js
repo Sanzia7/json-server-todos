@@ -1,0 +1,64 @@
+// npm install json-server@0.17.4
+// npx json-server --watch src/db.json --port 3004
+
+// npm i eslint@6.6.0
+
+import { HTTP_METHOD } from '../constants'
+
+//универсальная функция обертка для запросов на сервер :
+
+const fetchServer = async (method, { id, ...payload } = {}) => {
+	let url = `http://localhost:3004/todos`
+	let options = {
+		method,
+		headers: { 'Content-Type': 'application/json' },
+	}
+
+	if (method === HTTP_METHOD.GET) {
+		const { searchText, isSortingAZ } = payload
+		const sortingParams = isSortingAZ
+			? `_sort=title&_order=asc`
+			: `_sort=id&_order=desc`
+		url += `?${sortingParams}&title_like=${searchText}`
+	} else {
+		if (method !== HTTP_METHOD.POST) {
+			url += `/${id}`
+		}
+
+		if (method !== HTTP_METHOD.DELETE) {
+			options.body = JSON.stringify(payload)
+		}
+	}
+
+	const jsonData = await fetch(url, options)
+	return await jsonData.json()
+}
+
+//CRUD:
+
+export const requestCreateTodo = (newTodo) => fetchServer('POST', newTodo)
+
+export const requestReadTodos = (searchText = '', isSortingAZ = false) =>
+	fetchServer('GET', { searchText, isSortingAZ })
+
+export const requestUpdateTodo = (todoData) => fetchServer('PATCH', todoData)
+
+export const requestDeleteTodo = (todoId) => fetchServer('DELETE', { id: todoId })
+
+//Документация для json-server:
+
+//https://github.com/typicode/json-server
+//https://github.com/typicode/json-server/tree/v0
+
+//SORT
+
+// Add _sort and _order (ascending order by default)
+// GET /posts?_sort=views&_order=asc
+// GET /posts/1/comments?_sort=votes&_order=asc
+// For multiple fields, use the following format:
+// GET /posts?_sort=user,views&_order=desc,asc
+
+//Operators:
+
+// Add _like to filter (RegExp supported)
+// GET /posts?title_like=server
