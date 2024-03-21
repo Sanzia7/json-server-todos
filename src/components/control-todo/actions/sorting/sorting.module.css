@@ -55,5 +55,5 @@
 
 .checkbox:checked + .label {
 	padding: 2px 0 0 2px;
-	box-shadow: inset 2px 1px 5px 0 darkslategray;
+	box-shadow: inset 3px 2px 5px 0 #4f3a57;
 }
