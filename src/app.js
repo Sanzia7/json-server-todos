@@ -18,6 +18,7 @@ export const App = () => {
 	const [todos, setTodos] = useState([])
 	const [searchText, setSearchText] = useState('')
 	const [isSortingAZ, setIsSortingAZ] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
 
 	const addNewTodo = () => {
 		setTodos(addTodo(todos))
@@ -62,9 +63,11 @@ export const App = () => {
 	}
 
 	useEffect(() => {
+		setIsLoading(true)
 		requestReadTodos(searchText, isSortingAZ).then((loadedTodos) =>
 			setTodos(loadedTodos),
 		)
+		.finally(() => setIsLoading(false))
 	}, [searchText, isSortingAZ])
 
 	return (
@@ -77,24 +80,28 @@ export const App = () => {
 				onSorting={setIsSortingAZ}
 			/>
 
-			<div className={styles.container}>
-				{todos.map(({ id, title, completed, isEdit = false }) => (
-					<Todo
-						key={id}
-						id={id}
-						title={title}
-						completed={completed}
-						isEditTodo={isEdit}
-						onEdit={() => onEditTodo(id)}
-						onChangeTitle={(newTitle) => onAddTitle(id, newTitle)}
-						onChangeCompleted={(isCompleted) =>
-							onChangeIsCompleted(id, isCompleted)
-						}
-						onSave={() => onSaveTodo(id)}
-						onRemove={() => onRemoveTodo(id)}
-					/>
-				))}
-			</div>
+			{ isLoading ? (
+				<div className={ styles.loader }></div>
+			) : (
+				<div className={styles.container}>
+					{todos.map(({ id, title, completed, isEdit = false }) => (
+						<Todo
+							key={id}
+							id={id}
+							title={title}
+							completed={completed}
+							isEditTodo={isEdit}
+							onEdit={() => onEditTodo(id)}
+							onChangeTitle={(newTitle) => onAddTitle(id, newTitle)}
+							onChangeCompleted={(isCompleted) =>
+								onChangeIsCompleted(id, isCompleted)
+							}
+							onSave={() => onSaveTodo(id)}
+							onRemove={() => onRemoveTodo(id)}
+						/>
+					))}
+				</div>
+			)}
 		</div>
 	)
 }
