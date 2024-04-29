@@ -1,5 +1,4 @@
-// npm install json-server@0.17.4
-// npx json-server --watch src/db.json --port 3004
+
 
 // npm i eslint@6.6.0
 
@@ -36,14 +35,14 @@ const fetchServer = async (method, { id, ...payload } = {}) => {
 
 //CRUD:
 
-export const requestCreateTodo = (newTodo) => fetchServer('POST', newTodo)
+export const createTodo = (newTodo) => fetchServer('POST', newTodo)
 
-export const requestReadTodos = (searchText = '', isSortingAZ = false) =>
+export const readTodos = (searchText = '', isSortingAZ = false) =>
 	fetchServer('GET', { searchText, isSortingAZ })
 
-export const requestUpdateTodo = (todoData) => fetchServer('PATCH', todoData)
+export const updateTodo = (todoData) => fetchServer('PATCH', todoData)
 
-export const requestDeleteTodo = (todoId) => fetchServer('DELETE', { id: todoId })
+export const deleteTodo = (todoId) => fetchServer('DELETE', { id: todoId })
 
 //Документация для json-server:
 

@@ -1,11 +1,8 @@
-export const setTodo = (todos, newDataTodo) =>
+export const setSingleTodo = (todos, newDataTodo) =>
 	todos.map((todo) =>
 		todo.id === newDataTodo.id
-			? {
-					...todo,
-					...newDataTodo,
-				}
-			: todo,
+			? {	...todo, ...newDataTodo }
+			: todo
 	)
 
 // todos.map((todo) => {

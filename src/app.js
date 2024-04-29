@@ -4,13 +4,13 @@
 
 import { useEffect, useState } from 'react'
 import {
-	requestReadTodos,
-	requestCreateTodo,
-	requestUpdateTodo,
-	requestDeleteTodo,
+	createTodo,
+	readTodos,
+	updateTodo,
+	deleteTodo,
 } from './api'
 import { ControlTodo, Todo } from './components'
-import { addTodo, findTodo, setTodo, removeTodo } from './utils'
+import { addSingleTodo, findSingleTodo, setSingleTodo, removeSingleTodo } from './utils'
 import styles from './app.module.css'
 import { NEW_TODO_ID } from './constants'
 
@@ -20,55 +20,62 @@ export const App = () => {
 	const [isSortingAZ, setIsSortingAZ] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 
+	//делаем запрос на сервер для получения объекта todos/список дел:
+	useEffect(() => {
+		setIsLoading(true)
+		readTodos(searchText, isSortingAZ)
+			.then((loadedTodos) =>setTodos(loadedTodos))
+			.finally(() => setIsLoading(false))
+	}, [searchText, isSortingAZ])
+
+	//добавляем новое дело 
 	const addNewTodo = () => {
-		setTodos(addTodo(todos))
+		setTodos(addSingleTodo(todos))
 	}
 
 	const onSaveTodo = (todoId) => {
-		const { title, completed } = findTodo(todos, todoId) || {}
+		const { title, completed } = findSingleTodo(todos, todoId) || {}
 		//если появляется новое id, то делаем Create нового todo:
 		if (todoId === NEW_TODO_ID) {
-			requestCreateTodo({ title, completed }).then((todo) => {
-				let updatedTodos = setTodo(todos, {
+			createTodo({ title, completed })
+				.then((todo) => {
+				let updatedTodos = setSingleTodo(todos, {
 					id: NEW_TODO_ID,
 					isEdit: false,
 				})
-				updatedTodos = removeTodo(updatedTodos, NEW_TODO_ID)
-				updatedTodos = addTodo(updatedTodos, todo)
+				updatedTodos = removeSingleTodo(updatedTodos, NEW_TODO_ID)
+				updatedTodos = addSingleTodo(updatedTodos, todo)
 				setTodos(updatedTodos)
 			})
 		} else {
 			//если нет нового id, то можно делать Update уже существующего todo:
-			requestUpdateTodo({ id: todoId, title }).then(() => {
-				setTodos(setTodo(todos, { id: todoId, isEdit: false }))
-			})
+			updateTodo({ id: todoId, title })
+				.then(() => {
+				setTodos(setSingleTodo(todos, { id: todoId, isEdit: false }))
+				})
 		}
 	}
 
 	const onEditTodo = (id) => {
-		setTodos(setTodo(todos, { id, isEdit: true }))
+		setTodos(setSingleTodo(todos, { id, isEdit: true }))
 	}
 
 	const onAddTitle = (id, newTitle) => {
-		setTodos(setTodo(todos, { id, title: newTitle }))
+		setTodos(setSingleTodo(todos, { id, title: newTitle }))
 	}
+
 	const onChangeIsCompleted = (id, isCompleted) => {
-		requestUpdateTodo({ id, completed: isCompleted }).then(() => {
-			setTodos(setTodo(todos, { id, completed: isCompleted }))
-		})
+		updateTodo({ id, completed: isCompleted })
+			.then(() => {
+			setTodos(setSingleTodo(todos, { id, completed: isCompleted }))
+			})
 	}
 
 	const onRemoveTodo = (id) => {
-		requestDeleteTodo(id).then(() => setTodos(removeTodo(todos, id)))
+		deleteTodo(id)
+			.then(() => setTodos(removeSingleTodo(todos, id)))
 	}
 
-	useEffect(() => {
-		setIsLoading(true)
-		requestReadTodos(searchText, isSortingAZ).then((loadedTodos) =>
-			setTodos(loadedTodos),
-		)
-		.finally(() => setIsLoading(false))
-	}, [searchText, isSortingAZ])
 
 	return (
 		<div className={styles.app}>

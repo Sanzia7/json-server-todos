@@ -23,10 +23,12 @@ export const Search = ({ onSearch }) => {
 				<input
 					className={styles.search}
 					type="text"
-					placeholder="Searching..."
+					placeholder="Searching with debounce..."
 					value={value}
 					onChange={onChange}
-				/>
+			/>
+
+			{/* <Button type="submit">🧐</Button> */}
 			</form>
 
 	)
