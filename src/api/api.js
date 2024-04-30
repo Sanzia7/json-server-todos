@@ -1,11 +1,7 @@
-
-
-// npm i eslint@6.6.0
-
+// npx json-server --watch src/db.json --port 3004
 import { HTTP_METHOD } from '../constants'
 
 //универсальная функция обертка для запросов на сервер :
-
 const fetchServer = async (method, { id, ...payload } = {}) => {
 	let url = `http://localhost:3004/todos`
 	let options = {

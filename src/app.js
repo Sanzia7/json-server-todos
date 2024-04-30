@@ -1,6 +1,7 @@
 // npm i json-server
-// npx json-server --watch src/db.json --port 3007
-//http://localhost:3007/todos
+// npm install json-server@0.17.4
+// npx json-server --watch src/db.json --port 3004 --delay 2000
+//http://localhost:3004/todos
 
 import { useEffect, useState } from 'react'
 import {
@@ -10,9 +11,14 @@ import {
 	deleteTodo,
 } from './api'
 import { ControlTodo, Todo } from './components'
-import { addSingleTodo, findSingleTodo, setSingleTodo, removeSingleTodo } from './utils'
-import styles from './app.module.css'
+import {
+	addSingleTodo,
+	findSingleTodo,
+	setSingleTodo,
+	removeSingleTodo
+} from './utils'
 import { NEW_TODO_ID } from './constants'
+import styles from './app.module.css'
 
 export const App = () => {
 	const [todos, setTodos] = useState([])
@@ -28,7 +34,7 @@ export const App = () => {
 			.finally(() => setIsLoading(false))
 	}, [searchText, isSortingAZ])
 
-	//добавляем новое дело 
+	//добавляем новое дело
 	const addNewTodo = () => {
 		setTodos(addSingleTodo(todos))
 	}
@@ -41,7 +47,7 @@ export const App = () => {
 				.then((todo) => {
 				let updatedTodos = setSingleTodo(todos, {
 					id: NEW_TODO_ID,
-					isEdit: false,
+					isEditing: false,
 				})
 				updatedTodos = removeSingleTodo(updatedTodos, NEW_TODO_ID)
 				updatedTodos = addSingleTodo(updatedTodos, todo)
@@ -51,13 +57,13 @@ export const App = () => {
 			//если нет нового id, то можно делать Update уже существующего todo:
 			updateTodo({ id: todoId, title })
 				.then(() => {
-				setTodos(setSingleTodo(todos, { id: todoId, isEdit: false }))
+				setTodos(setSingleTodo(todos, { id: todoId, isEditing: false }))
 				})
 		}
 	}
 
 	const onEditTodo = (id) => {
-		setTodos(setSingleTodo(todos, { id, isEdit: true }))
+		setTodos(setSingleTodo(todos, { id, isEditing: true }))
 	}
 
 	const onAddTitle = (id, newTitle) => {
@@ -91,14 +97,14 @@ export const App = () => {
 				<div className={ styles.loader }></div>
 			) : (
 				<div className={styles.container}>
-					{todos.map(({ id, title, completed, isEdit = false }) => (
+					{todos.map(({ id, title, completed, isEditing = false }) => (
 						<Todo
 							key={id}
 							id={id}
 							title={title}
 							completed={completed}
-							isEditTodo={isEdit}
-							onEdit={() => onEditTodo(id)}
+							isEditTodo={isEditing}
+							onEditTodo={() => onEditTodo(id)}
 							onChangeTitle={(newTitle) => onAddTitle(id, newTitle)}
 							onChangeCompleted={(isCompleted) =>
 								onChangeIsCompleted(id, isCompleted)

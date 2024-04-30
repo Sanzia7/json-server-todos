@@ -6,7 +6,7 @@ export const Todo = ({
 	title,
 	completed,
 	isEditTodo,
-	onEdit,
+	onEditTodo,
 	onChangeTitle,
 	onChangeCompleted,
 	onSave,
@@ -17,22 +17,20 @@ export const Todo = ({
 		<div className={`${styles.todo} ${completed ? styles.completedTodo : ''}`}>
 			<RiTodoFill className={styles.todoIcon} />
 			<div className={styles.title}>
-				{isEditTodo ? (
-					<input
+				{ isEditTodo
+					? (<input
 						type="text"
 						value={title}
 						onChange={({ target }) => onChangeTitle(target.value)}
-					/>
-				) : (
-					<div onClick={onEdit}>{title}</div>
-				)}
+					/>)
+					: (<div onClick={ onEditTodo }>{ title }</div>)
+				}
 			</div>
 			<div>
-				{isEditTodo ? (
-					<Button onClick={onSave}>✍</Button>
-				) : (
-					<Button onClick={onRemove}>✖</Button>
-				)}
+				{ isEditTodo
+					? (<Button onClick={onSave}>✍</Button>)
+					: (<Button onClick={ onRemove }>✖</Button>)
+				}
 			</div>
 
 			<input
