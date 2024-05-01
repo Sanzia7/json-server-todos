@@ -5,7 +5,7 @@ import styles from './todo.module.css'
 export const Todo = ({
 	title,
 	completed,
-	isEditTodo,
+	isEditing,
 	onEditTodo,
 	onChangeTitle,
 	onChangeCompleted,
@@ -17,7 +17,7 @@ export const Todo = ({
 		<div className={`${styles.todo} ${completed ? styles.completedTodo : ''}`}>
 			<RiTodoFill className={styles.todoIcon} />
 			<div className={styles.title}>
-				{ isEditTodo
+				{ isEditing
 					? (<input
 						type="text"
 						value={title}
@@ -27,7 +27,7 @@ export const Todo = ({
 				}
 			</div>
 			<div>
-				{ isEditTodo
+				{ isEditing
 					? (<Button onClick={onSave}>✍</Button>)
 					: (<Button onClick={ onRemove }>✖</Button>)
 				}

@@ -66,7 +66,7 @@ export const App = () => {
 		setTodos(setSingleTodo(todos, { id, isEditing: true }))
 	}
 
-	const onAddTitle = (id, newTitle) => {
+	const onAddNewTitle = (id, newTitle) => {
 		setTodos(setSingleTodo(todos, { id, title: newTitle }))
 	}
 
@@ -103,9 +103,9 @@ export const App = () => {
 							id={id}
 							title={title}
 							completed={completed}
-							isEditTodo={isEditing}
+							isEditing={isEditing}
 							onEditTodo={() => onEditTodo(id)}
-							onChangeTitle={(newTitle) => onAddTitle(id, newTitle)}
+							onChangeTitle={(newTitle) => onAddNewTitle(id, newTitle)}
 							onChangeCompleted={(isCompleted) =>
 								onChangeIsCompleted(id, isCompleted)
 							}
